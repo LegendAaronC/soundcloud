@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link id="favicon" rel="icon" type="image/jpeg" href="">
 <title>Aaron</title>
 <style>
   @font-face {
@@ -368,6 +369,7 @@ async function loadProfile() {
   if (data && data.thumbnail_url) {
     avatar.src = data.thumbnail_url;
     bg.style.backgroundImage = `url('${data.thumbnail_url}')`;
+    document.getElementById('favicon').href = data.thumbnail_url;
   }
   if (data && data.author_name) {
     followerInfo.textContent = data.author_name + ' on SoundCloud';
