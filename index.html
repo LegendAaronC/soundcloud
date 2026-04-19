@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aaron</title>
+<style>
+  @font-face {
+    font-family: 'Ndot57';
+    src: url('https://github.com/LegendAaronC/Font/raw/refs/heads/main/Ndot57Caps-Regular.otf') format('opentype');
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #ff5500;
+    --accent2: #ff8c42;
+    --bg: #0a0a0a;
+    --surface: rgba(255,255,255,0.04);
+    --surface2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.1);
+    --text: #f0ece4;
+    --muted: rgba(240,236,228,0.5);
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  #bg-blur {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image: url('https://i1.sndcdn.com/avatars-000000000000-000000-t500x500.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(60px) brightness(0.25) saturate(1.4);
+    transform: scale(1.1);
+    transition: background-image 0.6s ease;
+  }
+
+  #bg-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.7) 60%, rgba(10,10,10,0.97) 100%);
+  }
+
+  .page {
+    position: relative;
+    z-index: 2;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  header {
+    display: flex;
+    align-items: flex-end;
+    gap: 28px;
+    padding: 60px 0 40px;
+  }
+
+  #avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent);
+    flex-shrink: 0;
+    background: #222;
+    transition: all 0.4s ease;
+  }
+
+  .header-text h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 10vw, 88px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+
+  .header-text p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .header-text a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 13px;
+  }
+
+  .header-text a:hover { text-decoration: underline; }
+
+  section { margin-top: 48px; }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .player-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .player-wrap iframe {
+    display: block;
+    width: 100%;
+    border: none;
+  }
+
+  .recommended-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .rec-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    transition: background 0.2s, border-color 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .rec-card:hover {
+    background: var(--surface2);
+    border-color: rgba(255,85,0,0.3);
+  }
+
+  .rec-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #1a1a1a;
+    flex-shrink: 0;
+  }
+
+  .rec-info { flex: 1; min-width: 0; }
+
+  .rec-title {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text);
+  }
+
+  .rec-artist {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .rec-play {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+    padding: 6px 12px;
+    border: 1px solid rgba(255,85,0,0.4);
+    border-radius: 20px;
+    transition: background 0.2s;
+  }
+
+  .rec-play:hover { background: rgba(255,85,0,0.15); }
+
+  .rec-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: color 0.2s;
+    line-height: 1;
+  }
+
+  .rec-remove:hover { color: #ff4444; }
+
+  .add-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+  }
+
+  .add-form p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .add-form input {
+    flex: 1;
+    min-width: 200px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .add-form input::placeholder { color: var(--muted); }
+  .add-form input:focus { border-color: var(--accent); }
+
+  .btn-add {
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+
+  .btn-add:hover { background: #e04a00; }
+  .btn-add:active { transform: scale(0.97); }
+
+  #add-status {
+    font-size: 12px;
+    margin-top: 10px;
+    min-height: 18px;
+    transition: color 0.3s;
+  }
+
+  .empty-rec {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 20px 0;
+    text-align: center;
+  }
+
+  .sc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,85,0,0.12);
+    border: 1px solid rgba(255,85,0,0.25);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--accent2);
+    text-decoration: none;
+    margin-top: 10px;
+    transition: background 0.2s;
+  }
+
+  .sc-badge:hover { background: rgba(255,85,0,0.22); }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in { animation: fadeIn 0.35s ease forwards; }
+</style>
+</head>
+<body>
+
+<div id="bg-blur"></div>
+<div id="bg-overlay"></div>
+
+<div class="page">
+  <header>
+    <img id="avatar" src="" alt="Aaron">
+    <div class="header-text">
+      <h1>Aaron</h1>
+      <p id="follower-info">Loading profile...</p>
+      <a href="https://soundcloud.com/aaaaaaronwashere" target="_blank" class="sc-badge">
+        &#9654; soundcloud.com/aaaaaaronwashere
+      </a>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-label">Latest track</div>
+    <div class="player-wrap" id="latest-player">
+      <iframe
+        id="sc-player"
+        scrolling="no"
+        allow="autoplay"
+        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/aaaaaaronwashere&color=%23ff5500&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"
+        height="300">
+      </iframe>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Recommended</div>
+    <div class="recommended-grid" id="rec-grid"></div>
+  </section>
+</div>
+
+<script>
+const SC_USER = 'aaaaaaronwashere';
+const OEMBED = 'https://soundcloud.com/oembed?format=json&url=';
+const bg = document.getElementById('bg-blur');
+const avatar = document.getElementById('avatar');
+const followerInfo = document.getElementById('follower-info');
+
+const RECOMMENDED = [
+  { url: 'https://soundcloud.com/aaaaaaronwashere/middsnart-v1' },
+  { url: 'https://soundcloud.com/aaaaaaronwashere/uptempo-of-hell' },
+  { url: 'https://soundcloud.com/aaaaaaronwashere/junkyard-2017-kickedit' }
+];
+
+async function fetchOembed(url) {
+  try {
+    const r = await fetch(OEMBED + encodeURIComponent(url));
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+}
+
+async function loadProfile() {
+  const data = await fetchOembed('https://soundcloud.com/' + SC_USER);
+  if (data && data.thumbnail_url) {
+    avatar.src = data.thumbnail_url;
+    bg.style.backgroundImage = `url('${data.thumbnail_url}')`;
+  }
+  if (data && data.author_name) {
+    followerInfo.textContent = data.author_name + ' on SoundCloud';
+  }
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function renderRecs() {
+  const grid = document.getElementById('rec-grid');
+  if (!RECOMMENDED.length) {
+    grid.innerHTML = '<div class="empty-rec">No recommended tracks yet.</div>';
+    return;
+  }
+  grid.innerHTML = '<div class="empty-rec">Loading...</div>';
+  const results = await Promise.all(RECOMMENDED.map(r => fetchOembed(r.url).then(d => ({ url: r.url, data: d }))));
+  grid.innerHTML = results.map(({ url, data }) => {
+    if (!data) return '';
+    return `
+    <div class="rec-card fade-in">
+      <img class="rec-thumb" src="${escHtml(data.thumbnail_url || '')}" alt="" onerror="this.style.background='#1a1a1a'">
+      <div class="rec-info">
+        <div class="rec-title">${escHtml(data.title || 'Unknown title')}</div>
+        <div class="rec-artist">${escHtml(data.author_name || 'Unknown artist')}</div>
+      </div>
+      <a class="rec-play" href="${escHtml(url)}" target="_blank">&#9654; Play</a>
+    </div>`;
+  }).join('');
+}
+
+loadProfile();
+renderRecs();
+</script>
+</body>
+</html>
