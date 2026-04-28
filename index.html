@@ -351,9 +351,9 @@ const avatar = document.getElementById('avatar');
 const followerInfo = document.getElementById('follower-info');
 
 const RECOMMENDED = [
-  { url: 'https://soundcloud.com/aaaaaaronwashere/die-young-middsnart-edit' },
-  { url: 'https://soundcloud.com/aaaaaaronwashere/rip-city-middsnart-edit' },
-  { url: 'https://soundcloud.com/aaaaaaronwashere/dunk-middsnart-edit' },
+  { url: 'https://soundcloud.com/aaaaaaronwashere/die-young-middsnart-edit', name: 'Aaron, LIL TEXAS' },
+  { url: 'https://soundcloud.com/aaaaaaronwashere/rip-city-middsnart-edit', name: 'Aaron, LIL TEXAS' },
+  { url: 'https://soundcloud.com/aaaaaaronwashere/dunk-middsnart-edit', name: 'Aaron, JulleMeck' },
 ];
 
 async function fetchOembed(url) {
@@ -393,24 +393,23 @@ grid.innerHTML = results.map(({ url, data }) => {
 
   const rec = RECOMMENDED.find(r => r.url === url);
 
-  const userArtist = rec?.artist || data.author_name || 'Unknown artist';
-  const rawTitle = rec?.title || data.title || 'Unknown title';
+  const rawTitle = data.title || 'Unknown title';
 
   const cleanTitle = rawTitle.replace(/ by .+$/i, '');
+
+  const artist = rec?.artist || data.author_name || 'Unknown artist';
 
   return `
     <div class="rec-card fade-in">
       <img class="rec-thumb" src="${escHtml(data.thumbnail_url || '')}" alt="" onerror="this.style.background='#1a1a1a'">
       <div class="rec-info">
         <div class="rec-title">${escHtml(cleanTitle)}</div>
-        <div class="rec-artist">${escHtml(userArtist)}</div>
+        <div class="rec-artist">${escHtml(artist)}</div>
       </div>
       <a class="rec-play" href="${escHtml(url)}" target="_blank">&#9654; Play</a>
     </div>`;
 }).join('');
-
 }
-
 loadProfile();
 renderRecs();
 </script>
