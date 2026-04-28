@@ -397,7 +397,7 @@ grid.innerHTML = results.map(({ url, data }) => {
 
   const cleanTitle = rawTitle.replace(/ by .+$/i, '');
 
-  const artist = rec?.artist || data.author_name || 'Unknown artist';
+  const artist = rec?.name || data.author_name || 'Unknown artist';
 
   return `
     <div class="rec-card fade-in">
