@@ -389,17 +389,22 @@ async function renderRecs() {
   grid.innerHTML = '<div class="empty-rec">Loading...</div>';
   const results = await Promise.all(RECOMMENDED.map(r => fetchOembed(r.url).then(d => ({ url: r.url, data: d }))));
   grid.innerHTML = results.map(({ url, data }) => {
-    if (!data) return '';
-    return `
+  if (!data) return '';
+
+  const rawTitle = data.title || 'Unknown title';
+  const artist = data.author_name || '';
+  const cleanTitle = rawTitle.replace(new RegExp(`\\s*by\\s*${artist}$`, 'i'), '');
+
+  return `
     <div class="rec-card fade-in">
       <img class="rec-thumb" src="${escHtml(data.thumbnail_url || '')}" alt="" onerror="this.style.background='#1a1a1a'">
       <div class="rec-info">
-        <div class="rec-title">${escHtml(data.title || 'Unknown title')}</div>
-        <div class="rec-artist">${escHtml(data.author_name || 'Unknown artist')}</div>
+        <div class="rec-title">${escHtml(cleanTitle)}</div>
+        <div class="rec-artist">${escHtml(artist)}</div>
       </div>
       <a class="rec-play" href="${escHtml(url)}" target="_blank">&#9654; Play</a>
     </div>`;
-  }).join('');
+}).join('');
 }
 
 loadProfile();
